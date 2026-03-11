@@ -1,5 +1,5 @@
 -- ╔══════════════════════════════════════════════════════════╗
--- ║               Kyx_UI  —  WindUI Style                  ║
+-- ║               Kyx_UI                                    ║
 -- ║         Fluent Design · Windows 11 Aesthetic            ║
 -- ║                   Version 1.1.0                         ║
 -- ║  + Theme Switcher  + SearchBox  + Dialog                ║
