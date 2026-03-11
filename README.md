@@ -1,6 +1,6 @@
 ---
 
-# Kyx_UI
+## Kyx_UI
 
 **Fluent Design · Windows 11 Style · v1.2.0**  
 UI Library สำหรับ Roblox Exploits
