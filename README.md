@@ -1,40 +1,70 @@
-# Kyx_UI — README
+---
 
+# Kyx_UI
+
+**Fluent Design · Windows 11 Style · v1.2.0**  
+UI Library สำหรับ Roblox Exploits
 ---
 
 ## 📦 โหลด Library
 
 ```lua
-local KyxUI = loadstring(game:HttpGet("YOUR_RAW_URL"))()
+local KyxUI = loadstring(game:HttpGet("https://raw.githubusercontent.com/xphuphirayy-hue/Kyx_UI/refs/heads/main/KyxUImain.lua"))()
 ```
 
 ---
 
-## 🪟 สร้าง Window
+## 🪟 CreateWindow
 
 ```lua
-local Window = KyxUI:CreateWindow({
+local Win = KyxUI:CreateWindow({
     Title    = "My Hub",
     SubTitle = "v1.0",
-    KeyCode  = Enum.KeyCode.RightShift, -- ปุ่มซ่อน/แสดง UI
-    Width    = 660,
-    Height   = 480,
-    Icon     = nil, -- rbxassetid://... (optional)
+    KeyCode  = Enum.KeyCode.RightShift,  -- ปุ่มซ่อน/แสดง (default: RightShift)
+    Width    = 660,                       -- optional
+    Height   = 480,                       -- optional
+    Icon     = nil,                       -- rbxassetid://... (optional)
 })
 ```
 
+| Method | หน้าที่ |
+|--------|---------|
+| `Win:CreateTab(name, icon)` | สร้าง Tab ใหม่ |
+| `Win:EnableSearch()` | เพิ่ม SearchBox บน Sidebar |
+| `Win:SetTitle(text)` | เปลี่ยนชื่อ Window |
+| `Win:Destroy()` | ลบ Window |
+
+**Hotkey เริ่มต้น**
+
+| ปุ่ม | หน้าที่ |
+|------|---------|
+| `RightShift` | ซ่อน / แสดง UI |
+| `─` (Titlebar) | ย่อ / ขยาย Window |
+| `✕` (Titlebar) | ปิด UI |
+
 ---
 
-## 📑 สร้าง Tab
+## 📑 CreateTab
 
 ```lua
-local Tab = Window:CreateTab("Farm", nil)
--- พารามิเตอร์ที่ 2 คือ icon (rbxassetid) ใส่ nil ถ้าไม่ใช้
+local Tab = Win:CreateTab("Farm", nil)
+-- arg 1: ชื่อ Tab
+-- arg 2: icon rbxassetid (nil ถ้าไม่ใช้)
 ```
 
 ---
 
-## 🧩 Components
+## 🔍 EnableSearch ⭐ NEW
+
+เพิ่ม SearchBox ที่ด้านบน Sidebar — กรอก keyword กรอง Tab ได้ทันที
+
+```lua
+Win:EnableSearch()
+```
+
+---
+
+## 🧩 Tab Components
 
 ### Section
 ```lua
@@ -45,19 +75,17 @@ Tab:Section("AUTO FARM")
 
 ### Toggle
 ```lua
-local toggle = Tab:Toggle({
+local tog = Tab:Toggle({
     Name        = "Auto Farm",
-    Description = "ฟาร์มอัตโนมัติ",   -- optional
+    Description = "ฟาร์มอัตโนมัติ",  -- optional
     Default     = false,
-    Callback    = function(value)
-        _G.AutoFarm = value
-    end,
+    Callback    = function(value) _G.AutoFarm = value end,
 })
 
--- ใช้งาน
-toggle:Set(true)   -- เปิด/ปิดด้วย code
-toggle:Get()       -- ดึงค่าปัจจุบัน
-toggle.Value       -- ค่าปัจจุบัน (boolean)
+tog:Set(true)           -- เปิด/ปิด
+tog:Get()               -- ดึงค่าปัจจุบัน (boolean)
+tog:SetDisabled(true)   -- ⭐ NEW — disable/enable component
+tog.Value               -- ค่าปัจจุบัน
 ```
 
 ---
@@ -66,11 +94,9 @@ toggle.Value       -- ค่าปัจจุบัน (boolean)
 ```lua
 Tab:Button({
     Name        = "Hop Server",
-    Description = "เปลี่ยน Server",   -- optional
-    Accent      = false,               -- true = ปุ่มสีน้ำเงิน
-    Callback    = function()
-        print("clicked!")
-    end,
+    Description = "เปลี่ยน Server",  -- optional
+    Accent      = false,              -- true = ปุ่มสีน้ำเงิน
+    Callback    = function() HopServer() end,
 })
 ```
 
@@ -78,57 +104,50 @@ Tab:Button({
 
 ### Slider
 ```lua
-local slider = Tab:Slider({
+local sl = Tab:Slider({
     Name        = "Walk Speed",
-    Description = "ความเร็วเดิน",      -- optional
+    Description = "ความเร็วเดิน",  -- optional
     Min         = 1,
     Max         = 500,
     Default     = 16,
-    Suffix      = " studs",            -- optional
-    Callback    = function(value)
-        game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = value
-    end,
+    Suffix      = " studs",         -- optional
+    Callback    = function(value) Humanoid.WalkSpeed = value end,
 })
 
--- ใช้งาน
-slider:Set(100)
-slider:Get()
-slider.Value
+sl:Set(100)
+sl:Get()
+sl:SetDisabled(true)   -- ⭐ NEW — disable/enable
+sl.Value
 ```
 
 ---
 
 ### Dropdown
 ```lua
-local dropdown = Tab:Dropdown({
+local dd = Tab:Dropdown({
     Name        = "Weapon",
-    Description = "เลือก Weapon",      -- optional
+    Description = "เลือก Weapon",  -- optional
     Options     = { "Melee", "Sword", "Gun", "Blox Fruit" },
     Default     = "Melee",
-    Callback    = function(value)
-        Selected_Weapon = value
-    end,
+    Callback    = function(value) Selected = value end,
 })
 
--- ใช้งาน
-dropdown:Set("Sword")
-dropdown:Get()
-dropdown.Value
+dd:Set("Sword")
+dd:Get()
+dd.Value
 ```
 
 ---
 
 ### Input
 ```lua
-local input = Tab:Input({
+local inp = Tab:Input({
     Name            = "Custom Value",
-    Description     = "กรอกค่า",       -- optional
+    Description     = "กรอกค่า",      -- optional
     PlaceholderText = "พิมพ์ที่นี่...",
     Default         = "",
-    NumberOnly      = false,            -- true = รับแค่ตัวเลข
-    Callback        = function(value, enterPressed)
-        print(value)
-    end,
+    NumberOnly      = false,           -- true = รับแค่ตัวเลข
+    Callback        = function(value, enterPressed) print(value) end,
 })
 ```
 
@@ -136,16 +155,24 @@ local input = Tab:Input({
 
 ### Keybind
 ```lua
-local keybind = Tab:Keybind({
+local kb = Tab:Keybind({
     Name     = "Toggle Farm",
     Default  = Enum.KeyCode.F,
-    Callback = function(keyCode)
-        print("New key:", keyCode.Name)
-    end,
+    Callback = function(keyCode) print("New key:", keyCode.Name) end,
 })
 
-keybind:Get()   -- ดึง KeyCode ปัจจุบัน
-keybind.Value
+kb:Get()   -- ดึง KeyCode ปัจจุบัน
+kb.Value
+```
+
+---
+
+### ColorDisplay
+```lua
+Tab:ColorDisplay({
+    Name  = "Accent Color",
+    Color = Color3.fromRGB(0, 120, 212),
+})
 ```
 
 ---
@@ -164,25 +191,19 @@ Tab:Separator()
 
 ---
 
-### Color Display
-```lua
-Tab:ColorDisplay({
-    Name  = "Accent Color",
-    Color = Color3.fromRGB(0, 120, 212),
-})
-```
+### Alert ⭐ NEW
 
----
-
-## 🔔 Notification
+แถบแจ้งเตือนแบบ inline ภายใน Tab — กด ✕ ปิดได้
 
 ```lua
-KyxUI:Notify({
-    Title    = "สำเร็จ!",
-    Content  = "โหลด Script เรียบร้อย",
-    Duration = 3,          -- วินาที
-    Type     = "Success",  -- Info | Success | Warning | Error
+local al = Tab:Alert({
+    Type        = "Warning",               -- Info | Success | Warning | Error
+    Text        = "Equip weapon ก่อนฟาร์ม",
+    Dismissible = true,                    -- default true
 })
+
+al:SetText("ข้อความใหม่")  -- แก้ข้อความ runtime
+al:Dismiss()               -- ปิดด้วย code
 ```
 
 | Type | สี |
@@ -194,55 +215,118 @@ KyxUI:Notify({
 
 ---
 
-## ⌨️ Hotkey
+### MultiToggleGroup ⭐ NEW
 
-| ปุ่ม | หน้าที่ |
-|------|---------|
-| `RightShift` (default) | ซ่อน / แสดง UI |
-| ปุ่ม `─` บน Titlebar | ย่อ / ขยาย Window |
-| ปุ่ม `✕` บน Titlebar | ปิด UI |
+กลุ่มปุ่มแบบ radio — เลือกได้ทีละอันเดียว เหมาะกับ Mode เลือก
 
-เปลี่ยน Hotkey ได้ตอนสร้าง Window ผ่าน `KeyCode`
+```lua
+local mode = Tab:MultiToggleGroup({
+    Name     = "Farm Mode",
+    Options  = { "Quest", "Boss", "Material" },
+    Default  = "Quest",
+    Callback = function(value) FarmMode = value end,
+})
+
+mode:Set("Boss")
+mode:Get()
+mode.Value
+```
+
+---
+
+## 🔔 Notify
+
+```lua
+KyxUI:Notify({
+    Title    = "สำเร็จ!",
+    Content  = "โหลด Script เรียบร้อย",
+    Duration = 3,           -- วินาที (default 3)
+    Type     = "Success",   -- Info | Success | Warning | Error
+})
+```
+
+Notification จะ slide-in จากขวาล่าง มี progress bar countdown และปิดเองอัตโนมัติ
+
+---
+
+## 💬 Dialog ⭐ NEW
+
+Popup confirm แบบ modal — ใช้ก่อนทำ action สำคัญ
+
+```lua
+KyxUI:Dialog({
+    Title     = "ยืนยัน?",
+    Content   = "ต้องการ Hop Server ใช่ไหม?",
+    Confirm   = "ยืนยัน",    -- default "ยืนยัน"
+    Cancel    = "ยกเลิก",    -- default "ยกเลิก"
+    OnConfirm = function() HopServer() end,
+    OnCancel  = function() print("cancelled") end,  -- optional
+})
+```
 
 ---
 
 ## 🎨 Theme
 
 Kyx_UI ใช้ **Fluent Design / Windows 11** เป็น base
-- สีหลัก: `#FFFFFF` / `#F3F3F3`
-- Accent: `#0078D4` (Microsoft Blue)
-- Font: `GothamBold` + `Gotham`
-- Corner radius: `8px`
+
+| Property | ค่า |
+|----------|-----|
+| Background | `#F3F3F3` / `#FFFFFF` |
+| Sidebar | `#EEEEEE` |
+| Accent | `#0078D4` (Microsoft Blue) |
+| Font | `GothamBold` + `Gotham` |
+| Corner radius | `8px` window `12px` |
+| UI Transparency | `0.4` (ปรับได้ที่ `BG_ALPHA`) |
+
+แก้ค่า transparency ทั้ง UI ได้ที่บรรทัดเดียว:
+```lua
+local BG_ALPHA = 0.4  -- 0 = ทึบสนิท, 1 = โปร่งใสสนิท
+```
 
 ---
 
 ## 📋 ตัวอย่างเต็ม
 
 ```lua
-local KyxUI = loadstring(game:HttpGet("URL"))()
+local KyxUI = loadstring(game:HttpGet("https://raw.githubusercontent.com/xphuphirayy-hue/Kyx_UI/refs/heads/main/KyxUImain.lua"))()
 
-local Window = KyxUI:CreateWindow({
+local Win = KyxUI:CreateWindow({
     Title    = "Kyx Hub",
-    SubTitle = "v1.0",
+    SubTitle = "v1.2",
     KeyCode  = Enum.KeyCode.RightShift,
 })
 
--- Tab 1: Farm
-local FarmTab = Window:CreateTab("Farm", nil)
+Win:EnableSearch()  -- เปิด searchbox
+
+-- ─── Tab: Farm ───────────────────────────────────────────
+local FarmTab = Win:CreateTab("Farm", nil)
+
+FarmTab:Alert({
+    Type = "Info",
+    Text = "ต้องการ Sword ที่ Level เดียวกับ Quest",
+})
 
 FarmTab:Section("AUTO FARM")
 
-FarmTab:Toggle({
+local autoFarm = FarmTab:Toggle({
     Name     = "Auto Farm",
     Default  = false,
     Callback = function(v) _G.AutoFarm = v end,
+})
+
+FarmTab:MultiToggleGroup({
+    Name     = "Farm Mode",
+    Options  = { "Quest", "Boss", "Material" },
+    Default  = "Quest",
+    Callback = function(v) _G.FarmMode = v end,
 })
 
 FarmTab:Dropdown({
     Name     = "Weapon",
     Options  = { "Melee", "Sword", "Gun" },
     Default  = "Melee",
-    Callback = function(v) Selected_Weapon = v end,
+    Callback = function(v) _G.Weapon = v end,
 })
 
 FarmTab:Slider({
@@ -251,7 +335,7 @@ FarmTab:Slider({
     Max      = 500,
     Default  = 250,
     Suffix   = " sps",
-    Callback = function(v) TweenSpeed = v end,
+    Callback = function(v) _G.TweenSpeed = v end,
 })
 
 FarmTab:Section("UTILITIES")
@@ -259,19 +343,25 @@ FarmTab:Section("UTILITIES")
 FarmTab:Button({
     Name     = "Hop Server",
     Accent   = true,
-    Callback = function() HopServer() end,
+    Callback = function()
+        KyxUI:Dialog({
+            Title     = "Hop Server?",
+            Content   = "ต้องการย้าย Server ใช่ไหม?",
+            OnConfirm = function() HopServer() end,
+        })
+    end,
 })
 
--- Tab 2: Settings
-local SettingsTab = Window:CreateTab("Settings", nil)
+-- ─── Tab: Settings ───────────────────────────────────────
+local SettingsTab = Win:CreateTab("Settings", nil)
 
 SettingsTab:Section("COMBAT")
 
-SettingsTab:Toggle({
+local fastAtk = SettingsTab:Toggle({
     Name        = "Fast Attack",
     Description = "โจมตีเร็วอัตโนมัติ",
     Default     = true,
-    Callback    = function(v) AutoAttacks = v end,
+    Callback    = function(v) _G.FastAttack = v end,
 })
 
 SettingsTab:Keybind({
@@ -279,7 +369,7 @@ SettingsTab:Keybind({
     Default = Enum.KeyCode.RightShift,
 })
 
--- Notification
+-- ─── Done ────────────────────────────────────────────────
 KyxUI:Notify({
     Title   = "Kyx Hub",
     Content = "โหลดสำเร็จ!",
@@ -289,4 +379,14 @@ KyxUI:Notify({
 
 ---
 
-> **Kyx_UI** — WindUI Style · Fluent Design · Made for Roblox
+## 📝 Changelog
+
+| Version | Changes |
+|---------|---------|
+| **v1.2.0** | + Disabled State · + Alert · + MultiToggleGroup · + Sidebar Search · + Dialog |
+| **v1.1.0** | + UI Transparency (`BG_ALPHA = 0.4`) |
+| **v1.0.0** | Initial release — Window · Tab · Toggle · Button · Slider · Dropdown · Input · Keybind · Notify |
+
+---
+
+> **Kyx_UI** · Made for Roblox
